@@ -1,0 +1,182 @@
+/* =========================================
+   NAVBAR CONTAINER
+========================================= */
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+
+  /* Color sync with the Home Page aesthetic */
+  background: #fdfbf7; 
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 0 70px;
+  z-index: 1000;
+
+  /* Subtle border instead of heavy shadow for a cleaner look */
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+
+  flex-shrink: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* =========================================
+   LEFT NAVIGATION
+========================================= */
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 45px;
+  min-width: 0;
+}
+
+/* NAV ITEMS */
+
+.nav-item {
+  /* Using the Sage Green from your Home Page */
+  color: #5a6d56; 
+  text-decoration: none;
+
+  font-size: 14px; /* Slightly smaller for professional "Services" look */
+  font-weight: 800;
+  letter-spacing: 2px; /* Matching the Indie/Professional spacing */
+  text-transform: uppercase;
+
+  cursor: pointer;
+  position: relative;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+/* HOVER EFFECT */
+
+.nav-item:hover {
+  color: #d66853; /* Coral accent on hover */
+  transform: translateY(-1px);
+}
+
+/* UNDERLINE ANIMATION */
+
+.nav-item::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  transform: translateX(-50%);
+  width: 0%;
+  height: 2px;
+  background: #d66853;
+  transition: width 0.3s ease;
+}
+
+.nav-item:hover::after {
+  width: 100%;
+}
+
+/* ACTIVE LINK */
+
+.nav-item.active {
+  color: #222;
+  font-weight: 900;
+}
+
+.nav-item.active::after {
+  width: 100%;
+}
+
+/* =========================================
+   RIGHT SECTION
+========================================= */
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  min-width: 0;
+}
+
+/* LOGOUT / LOGIN */
+
+.login-text {
+  color: #d66853; /* Consistent coral color */
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.login-text:hover {
+  opacity: 0.7;
+}
+
+/* PROFILE ICON */
+
+.profile-icon {
+  width: 40px;
+  height: 40px;
+  background: #6b705c; /* Sage green background */
+  border-radius: 50%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 16px;
+  font-weight: 900;
+  color: white;
+
+  cursor: pointer;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.profile-icon:hover {
+  transform: scale(1.1);
+  background: #5a6d56;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 1000px) {
+  .navbar {
+    padding: 0 35px;
+  }
+
+  .nav-left {
+    gap: 25px;
+  }
+
+  .nav-item {
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+}
+
+@media (max-width: 700px) {
+  .nav-left {
+    gap: 15px;
+  }
+
+  .nav-item {
+    font-size: 11px;
+    letter-spacing: 0.5px;
+  }
+
+  .login-text {
+    display: none;
+  }
+}

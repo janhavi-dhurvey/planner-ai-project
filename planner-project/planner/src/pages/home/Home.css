@@ -1,0 +1,84 @@
+/* =========================================
+   AESTHETIC GLOBAL REFINEMENTS
+========================================= */
+
+/* Smooth scroll for the whole page */
+html {
+    scroll-behavior: smooth;
+}
+
+/* 1. HERO ANIMATIONS */
+@keyframes float {
+    0% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(1deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
+}
+
+/* Apply floating effect to the circular initial frame */
+.photo-frame-animate {
+    animation: float 6s ease-in-out infinite;
+}
+
+/* 2. STICKY NOTE HOVER EFFECTS */
+/* This makes the quick links feel like physical paper */
+.sticky-note-hover {
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+.sticky-note-hover:hover {
+    transform: rotate(0deg) scale(1.1) translateY(-10px) !important;
+    box-shadow: 15px 15px 30px rgba(0,0,0,0.1) !important;
+    background-color: #ffffff !important;
+    z-index: 20;
+}
+
+/* 3. BUTTON SHINE EFFECT */
+.connect-btn-animate {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.connect-btn-animate:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px #7E3123 !important;
+}
+
+/* 4. RULER FILL ANIMATION */
+@keyframes progressStripes {
+    from { background-position: 0 0; }
+    to { background-position: 40px 0; }
+}
+
+/* Add moving stripes to your progress bar */
+.ruler-fill-style {
+    background-size: 40px 40px;
+    animation: progressStripes 2s linear infinite;
+}
+
+/* 5. RESPONSIVE ADJUSTMENTS */
+@media (max-width: 768px) {
+    .hero-content-mobile {
+        flex-direction: column !important;
+        text-align: center !important;
+    }
+    
+    .hero-text-container-mobile {
+        text-align: center !important;
+    }
+
+    .indie-title-mobile {
+        font-size: 40px !important;
+    }
+}
+
+/* 6. TYPOGRAPHY FALLBACKS */
+h1, h2, h3, h4 {
+    letter-spacing: -0.5px;
+}
+
+/* Custom selection color to match your aesthetic */
+::selection {
+    background: #A3B18A;
+    color: white;
+}
