@@ -8,21 +8,20 @@ import GoalTimer from "./GoalTimer";
 import ProductivityDashboard from "../../components/ProductivityDashboard";
 import DeadlineSidebar from "./DeadlineSidebar"; 
 
+// 🔥 CLEAN ASSET IMPORTS
+import washitape from "../../assets/washitape-edge.png";
+import starsBanner from "../../assets/doodle-stars-banner.png"; 
+import flower from "../../assets/flower-doodle.png";
+
 const Goals = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [goals, setGoals] = useState([]);
   const [activeGoal, setActiveGoal] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  /* =========================================
-      LOCAL DATE HELPER (IST/Local Sync)
-  ========================================= */
   const getLocalDate = () => {
     const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
   };
 
   const parseTime = (timeStr) => {
@@ -30,38 +29,18 @@ const Goals = () => {
     try {
       const [time, period] = timeStr.split(" ");
       let [hour, minute] = time.split(":").map(Number);
-      
-      // Handle Midnight (12:00 AM) as the end of the day sequence
-      if (period === "AM" && hour === 12) {
-        hour = 24; 
-      } else if (period === "PM" && hour < 12) {
-        hour += 12;
-      }
-      
+      if (period === "AM" && hour === 12) hour = 24; 
+      else if (period === "PM" && hour < 12) hour += 12;
       return hour * 60 + minute;
-    } catch {
-      return 0;
-    }
+    } catch { return 0; }
   };
 
-  /* =========================================
-      LOAD GOALS
-  ========================================= */
   const loadGoals = useCallback(async () => {
     try {
       const today = getLocalDate();
       const res = await API.get(`/goals?date=${today}`);
       let goalData = Array.isArray(res.data) ? res.data : [];
-
-      // SORTING FIX: Primarily use the "order" from Chatbot sequence, 
-      // fallback to numeric time calculation.
-      goalData.sort((a, b) => {
-        if (a.order !== undefined && b.order !== undefined) {
-          return a.order - b.order;
-        }
-        return parseTime(a.time) - parseTime(b.time);
-      });
-
+      goalData.sort((a, b) => (a.order ?? parseTime(a.time)) - (b.order ?? parseTime(b.time)));
       setGoals(goalData);
     } catch (err) {
       console.error("Goals loading error:", err);
@@ -80,25 +59,17 @@ const Goals = () => {
   const handleRestartTimeline = async () => {
     if (!window.confirm("This will clear today's plan. Continue?")) return;
     try {
-      const today = getLocalDate();
-      await API.delete(`/goals/daily?date=${today}`);
+      await API.delete(`/goals/daily?date=${getLocalDate()}`);
       await loadGoals();
-    } catch (err) {
-      alert("Reset failed");
-    }
+    } catch { alert("Reset failed"); }
   };
 
   const handleAddGoal = async (newGoal) => {
     try {
-      await API.post("/goals", {
-        ...newGoal,
-        date: getLocalDate() 
-      });
+      await API.post("/goals", { ...newGoal, date: getLocalDate() });
       await loadGoals();
       setIsFormOpen(false);
-    } catch (err) {
-      alert("Failed to add goal");
-    }
+    } catch { alert("Failed to add goal"); }
   };
 
   const deleteGoal = async (goalId, e) => {
@@ -107,21 +78,7 @@ const Goals = () => {
     try {
       await API.delete(`/goals/${goalId}`);
       await loadGoals();
-    } catch {
-      alert("Delete failed");
-    }
-  };
-
-  const editGoal = async (goal, e) => {
-    e.stopPropagation();
-    const newTitle = prompt("Edit goal title:", goal.title);
-    if (!newTitle) return;
-    try {
-      await API.put(`/goals/${goal._id}`, { title: newTitle.trim() });
-      await loadGoals();
-    } catch {
-      alert("Edit failed");
-    }
+    } catch { alert("Delete failed"); }
   };
 
   const formatDuration = (d) => {
@@ -130,83 +87,95 @@ const Goals = () => {
   };
 
   return (
-    <div className="goals-page" style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+    <div className="goals-page aesthetic-bg">
       <Navbar />
 
-      <div className="goals-container" style={{ flex: 1, display: "flex", padding: "20px", gap: "20px", overflow: "hidden" }}>
+      <div className="goals-container">
         
-        {/* LEFT PANEL */}
-        <div className="left-panel" style={{ width: "300px", display: "flex", flexDirection: "column", height: "100%" }}>
-          <div className="planner-box" style={{ 
-            padding: "0", background: "#6c7543", borderRadius: "24px",
-            flex: 1, display: "flex", flexDirection: "column", overflow: "hidden"
-          }}>
+        {/* LEFT PANEL - DEADLINES */}
+        <div className="left-panel">
+          <div className="scrapbook-sidebar">
             <DeadlineSidebar />
+            <img src={flower} alt="flower" className="sidebar-flower" />
           </div>
         </div>
 
-        {/* RIGHT PANEL */}
-        <div className={`right-panel ${!activeGoal && !isFormOpen ? "scroll-enabled" : ""}`}
-          style={{ flex: 1, overflowY: "auto", maxHeight: "100%", paddingRight: "10px" }}>
+        {/* RIGHT PANEL - CONTENT */}
+        <div className={`right-panel ${!activeGoal && !isFormOpen ? "scroll-enabled" : ""}`}>
           
-          {!activeGoal && !isFormOpen && (
-            <div style={{ position: "relative" }}>
-               {goals.length > 0 && (
-                 <button 
-                  onClick={handleRestartTimeline}
-                  style={{
-                    position: "absolute", top: "10px", right: "10px", zIndex: 10,
-                    background: "rgba(255, 107, 107, 0.1)", color: "#ff6b6b", border: "1px solid #ff6b6b",
-                    padding: "6px 12px", borderRadius: "8px", fontSize: "12px", cursor: "pointer", fontWeight: "700"
-                  }}>
-                  🔄 Restart Today
-                 </button>
-               )}
-               <ProductivityDashboard goals={goals} />
-            </div>
-          )}
-
           {activeGoal ? (
             <GoalTimer goal={activeGoal} onBack={() => setActiveGoal(null)} />
           ) : isFormOpen ? (
             <div className="goal-form-wrapper">
-              <button style={{ marginBottom: "15px", background: "#6c7543", color: "white", border: "none", padding: "8px 14px", borderRadius: "8px", cursor: "pointer" }}
-                onClick={() => setIsFormOpen(false)}> ← Back </button>
+              {/* 🔥 FIXED: Professional Back Button */}
+              <button className="back-btn-aesthetic" onClick={() => setIsFormOpen(false)}> 
+                ← Back to Planner 
+              </button>
               <GoalForm onSave={handleAddGoal} onCancel={() => setIsFormOpen(false)} />
             </div>
           ) : (
-            <div className="goals-content" style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+            <div className="goals-content">
+              <div className="dashboard-wrapper">
+                <div className="dashboard-header-actions">
+                  {goals.length > 0 && (
+                    <button className="restart-btn" onClick={handleRestartTimeline}>
+                      🔄 Restart Today
+                    </button>
+                  )}
+                </div>
+
+                <ProductivityDashboard goals={goals} />
+                <img src={starsBanner} alt="stars" className="bg-stars-deco" />
+              </div>
+
               {loading ? (
                 <div className="empty-state">Loading your daily plan...</div>
               ) : goals.length === 0 ? (
-                <div className="empty-state">
-                  📭 No goals for today ({getLocalDate()})<br />
-                  <span>Use the Chatbot to generate your optimized schedule!</span>
+                <div className="empty-state scrapbook-empty">
+                  📭 No goals for today... <br />
+                  <span>Use the Chatbot to doodle your schedule!</span>
                 </div>
               ) : (
-                <div className="timeline-fade-in" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                <div className="timeline-grid">
                   {goals.map((goal) => (
-                    <div key={goal._id} className="goal-tab"
-                      style={{ background: goal.color, borderRadius: "20px", boxShadow: "0 6px 12px rgba(0,0,0,0.08)", marginBottom: "4px" }}
-                      onClick={() => setActiveGoal(goal)}>
-                      <div className="goal-icon-circle">{goal.category}</div>
-                      <div className="goal-info">
-                        <span className="goal-tab-title">{goal.title}</span>
-                        <span className="goal-tab-time">{goal.time} • {formatDuration(goal.duration)}</span>
-                      </div>
-                      <div className="goal-actions">
-                        <button onClick={(e) => editGoal(goal, e)}>✏</button>
-                        <button onClick={(e) => deleteGoal(goal._id, e)}>🗑</button>
+                    <div 
+                      key={goal._id} 
+                      className="goal-paper-card"
+                      style={{ borderLeft: `10px solid ${goal.color}` }}
+                      onClick={() => setActiveGoal(goal)}
+                    >
+                      <img src={washitape} alt="tape" className="card-tape" />
+                      
+                      <div className="goal-card-body">
+                        <div className="goal-icon-circle">{goal.category}</div>
+                        
+                        <div className="goal-info">
+                          <span className="goal-tab-title">{goal.title}</span>
+                          <span className="goal-tab-time">{goal.time} • {formatDuration(goal.duration)}</span>
+                        </div>
+
+                        <div className="goal-actions">
+                          <button 
+                            onClick={(e) => deleteGoal(goal._id, e)} 
+                            className="delete-icon-btn"
+                          >
+                            🗑
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
                 </div>
               )}
-              <button className="add-goal-btn" onClick={() => setIsFormOpen(true)} style={{ marginTop: "10px" }}> + </button>
             </div>
           )}
         </div>
       </div>
+
+      {/* Floating Add Button stays static outside scroll containers */}
+      {!isFormOpen && !activeGoal && (
+        <button className="add-goal-btn-floating" onClick={() => setIsFormOpen(true)}> + </button>
+      )}
     </div>
   );
 };

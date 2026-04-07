@@ -1,151 +1,171 @@
 /* =========================================
-   GOAL FORM CONTAINER
+   GOAL FORM CONTAINER (COMPACT)
 ========================================= */
 
-.goal-form-old{
-  width:100%;
-  max-width:600px;
-  padding:10px 5px 20px 5px;
+.goal-form-compact {
+  width: 100%;
+  max-width: 700px; /* Slightly wider for horizontal flow */
+  padding: 10px 5px;
+}
+
+.goal-error {
+  color: #ff4d4f;
+  font-size: 13px;
+  margin-bottom: 12px;
+  font-weight: 600;
 }
 
 /* =========================================
-   TITLE + ERROR
+   INPUT GROUP & ROW LAYOUT
 ========================================= */
 
-.goal-form-title{
-  font-size:22px;
-  font-weight:700;
-  margin-bottom:15px;
+.goal-input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 18px;
 }
 
-.goal-error{
-  color:#ff4d4f;
-  font-size:14px;
-  margin-bottom:10px;
+.goal-form-row {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+}
+
+.flex-1 { flex: 2; }
+.flex-small { flex: 1; }
+
+.goal-input-group label {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #2d3436;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.goal-input-group input {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.1);
+  font-size: 14px;
+  background: white;
+  transition: 0.2s;
+}
+
+.goal-input-group input:focus {
+  border-color: #fab1a0;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(250, 177, 160, 0.2);
 }
 
 /* =========================================
-   INPUT GROUP
+   AM/PM TOGGLE STYLING
 ========================================= */
 
-.goal-input-group{
-  display:flex;
-  flex-direction:column;
-  margin-bottom:16px;
+.time-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.goal-input-group label{
-  font-size:14px;
-  font-weight:600;
-  margin-bottom:6px;
+.period-toggle {
+  display: flex;
+  background: #eee;
+  padding: 3px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
 }
 
-.goal-input-group input{
-  padding:10px 12px;
-  border-radius:8px;
-  border:1px solid #ccc;
-  font-size:14px;
-  transition:0.2s ease;
-  background:white;
+.period-toggle button {
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 800;
+  border-radius: 7px;
+  transition: 0.2s;
+  color: #636e72;
 }
 
-.goal-input-group input:focus{
-  border-color:#6c7543;
-  outline:none;
-  box-shadow:0 0 0 2px rgba(108,117,67,0.15);
+.period-toggle button.active {
+  background: white;
+  color: #2d3436;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 /* =========================================
-   CATEGORY ICONS
+   HORIZONTAL CATEGORY & COLOR FIX
 ========================================= */
 
-.category-icons{
-  display:flex;
-  gap:12px;
-  margin-top:6px;
-  flex-wrap:wrap;
+.category-icons-compact, .color-options-compact {
+  display: flex;
+  flex-direction: row !important; /* STRICT: Forces horizontal */
+  gap: 12px;
+  margin-top: 5px;
+  flex-wrap: nowrap; /* Prevents vertical stacking */
+  overflow-x: auto;
+  padding-bottom: 5px;
 }
 
-.category-icons span{
-  cursor:pointer;
-  font-size:20px;
-  padding:6px;
-  border-radius:8px;
-  transition:0.2s ease;
+.category-icons-compact span {
+  cursor: pointer;
+  font-size: 22px;
+  padding: 8px;
+  border-radius: 12px;
+  transition: 0.2s;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0,0,0,0.05);
 }
 
-.category-icons span:hover{
-  background:#e0e0e0;
+.category-icons-compact span.active-icon {
+  background: #fab1a0;
+  border-color: #fab1a0;
+  transform: scale(1.1);
 }
 
-.active-icon{
-  background:#6c7543;
-  color:white;
+.color-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 3px solid white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: 0.2s;
+}
+
+.active-color {
+  transform: scale(1.2);
+  border-color: #2d3436;
 }
 
 /* =========================================
-   COLOR OPTIONS
+   ACTION BUTTONS
 ========================================= */
 
-.color-options{
-  display:flex;
-  gap:10px;
-  margin-top:6px;
-  flex-wrap:wrap;
+.goal-form-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 15px;
 }
 
-.color-circle{
-  width:24px;
-  height:24px;
-  border-radius:50%;
-  cursor:pointer;
-  border:2px solid transparent;
-  transition:0.2s ease;
+.goal-save {
+  background: #6c7543;
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 4px 10px rgba(108, 117, 67, 0.2);
 }
 
-.color-circle:hover{
-  transform:scale(1.1);
-}
-
-.active-color{
-  border:2px solid #222;
-}
-
-/* =========================================
-   BUTTONS
-========================================= */
-
-.goal-form-actions{
-  display:flex;
-  gap:12px;
-  margin-top:20px;
-}
-
-.goal-save{
-  background:#6c7543;
-  color:white;
-  padding:10px 18px;
-  border:none;
-  border-radius:10px;
-  cursor:pointer;
-  font-weight:600;
-  transition:0.2s ease;
-}
-
-.goal-save:hover{
-  background:#5b6336;
-}
-
-.goal-cancel{
-  background:#e0e0e0;
-  padding:10px 18px;
-  border:none;
-  border-radius:10px;
-  cursor:pointer;
-  font-weight:600;
-  transition:0.2s ease;
-}
-
-.goal-cancel:hover{
-  background:#d5d5d5;
+.goal-cancel {
+  background: #dfe6e9;
+  color: #2d3436;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
 }

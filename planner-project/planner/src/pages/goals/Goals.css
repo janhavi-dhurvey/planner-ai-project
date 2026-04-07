@@ -1,351 +1,298 @@
 /* =========================================
-   PAGE LAYOUT
+    PAGE LAYOUT & SCROLL ISOLATION
 ========================================= */
 
-.goals-page{
-  background:#dcd4c7;
-  min-height:100vh;
-  padding-top:100px;
+.goals-page {
+  background: url("../../assets/sky-bg.jpg") no-repeat center center fixed;
+  background-size: cover;
+  height: 100vh; 
+  width: 100vw;
+  overflow: hidden; 
+  padding-top: 60px; 
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  flex-direction: column;
 }
 
-.goals-container{
-  width:92%;
-  max-width:1250px;
-  margin:auto;
-  display:grid;
-  grid-template-columns:320px 1fr;
-  gap:30px;
-  padding:20px;
+.goals-container {
+  width: 98%;
+  max-width: 1400px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 20px;
+  padding: 10px;
+  height: calc(100vh - 110px); 
+  overflow: hidden;
+  align-items: stretch;
 }
 
 /* =========================================
-   LEFT PANEL
+    LEFT PANEL
 ========================================= */
 
-.left-panel{
-  background:#9ea37a;
-  border-radius:25px;
-  padding:25px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  height:520px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+.left-panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-.planner-box{
-  background:#e7e7e7;
-  width:100%;
-  height:260px;
-  border-radius:20px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  color:#777;
-  font-size:18px;
-  font-weight:600;
+.scrapbook-sidebar {
+  background: rgba(255, 255, 255, 0.5) !important; 
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 30px !important;
+  position: relative;
+  padding: 20px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.scrapbook-sidebar * {
+  color: #2d3436 !important; 
+}
+
+.sidebar-flower {
+  position: sticky; 
+  bottom: 0; 
+  left: 0;
+  width: 55px; 
+  z-index: 10;
+  pointer-events: none;
 }
 
 /* =========================================
-   RIGHT PANEL
+    RIGHT PANEL
 ========================================= */
 
-.right-panel{
-  background:#e7e7e7;
-  border-radius:30px;
-  padding:30px;
-  min-height:520px;
+.right-panel {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  border-radius: 40px;
+  padding: 20px; 
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
 
-  overflow-y:auto;
-  max-height:calc(100vh - 120px);
+.dashboard-wrapper {
+  position: relative;
+  z-index: 5;
+  margin-bottom: 25px;
+  width: 100%;
+}
 
-  position:relative;
-  box-shadow:0 8px 18px rgba(0,0,0,0.08);
+.bg-stars-deco {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+  pointer-events: none;
+  z-index: -1; 
+  opacity: 0.6;
+  border-radius: 35px;
 }
 
 /* =========================================
-   GOALS LIST
+    BUTTONS (RESTART & BACK)
 ========================================= */
 
-.goals-content{
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-  padding-bottom:120px;
+.restart-btn, .back-btn-aesthetic {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #2d3436;
+  padding: 8px 18px;
+  border-radius: 50px; 
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  margin-bottom: 15px;
+}
+
+.restart-btn:hover, .back-btn-aesthetic:hover {
+  background: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
 }
 
 /* =========================================
-   GOAL CARD
+    GOAL CARDS & TEXT SPACING FIX
 ========================================= */
 
-.goal-tab{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:16px 20px;
-  border-radius:40px;
-  min-height:70px;
-  box-shadow:0 6px 14px rgba(0,0,0,0.12);
-  transition:0.25s ease;
-  cursor:pointer;
+.timeline-grid {
+  display: grid;
+  grid-template-columns: 1fr; 
+  gap: 30px; 
+  padding-top: 10px;
+  padding-bottom: 80px;
 }
 
-.goal-tab:hover{
-  transform:translateX(6px) scale(1.02);
-  box-shadow:0 10px 20px rgba(0,0,0,0.18);
+.goal-paper-card {
+  background: white;
+  padding: 20px 25px; 
+  border-radius: 20px;
+  position: relative;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
 }
 
-.goal-icon-circle{
-  width:46px;
-  height:46px;
-  border-radius:50%;
-  background:white;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:20px;
-  margin-right:12px;
-  box-shadow:0 3px 8px rgba(0,0,0,0.15);
+.card-tape {
+  position: absolute;
+  top: -15px; 
+  left: 50%;
+  transform: translateX(-50%);
+  width: 85px; 
+  z-index: 20;
 }
 
-.goal-info{
-  display:flex;
-  flex-direction:column;
-  flex:1;
-  margin-left:10px;
-  overflow:hidden;
+.goal-card-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
-.goal-tab-title{
-  font-size:17px;
-  font-weight:700;
+.goal-info {
+  flex: 1;
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px; 
 }
 
-.goal-tab-time{
-  font-size:13px;
-  font-weight:600;
-  opacity:0.8;
-  margin-top:2px;
+.goal-tab-title {
+  display: block;
+  font-size: 18px;
+  font-weight: 800;
+  color: #2d3436;
+  line-height: 1.2;
 }
 
-.goal-actions{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin-left:15px;
-}
-
-.goal-actions button{
-  border:none;
-  background:white;
-  border-radius:8px;
-  padding:6px 9px;
-  cursor:pointer;
-  transition:0.2s ease;
-  font-size:14px;
-}
-
-.goal-actions button:hover{
-  transform:scale(1.1);
+.goal-tab-time {
+  font-size: 13px;
+  color: #636e72;
+  font-weight: 600;
 }
 
 /* =========================================
-   ADD BUTTON (🔥 FINAL FIX)
+    🔥 GOAL TIMER (PROFESSIONAL FIX)
 ========================================= */
 
-.add-goal-btn{
-  position:fixed; /* ✅ FIXED */
-
-  bottom:30px;
-  right:40px;
-
-  width:55px;
-  height:55px;
-
-  border-radius:50%;
-  background:#6c7543;
-  color:white;
-
-  font-size:28px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  box-shadow:0 6px 15px rgba(0,0,0,0.2);
-  cursor:pointer;
-  transition:0.25s ease;
-
-  z-index:999; /* ✅ ensures it stays above content */
+.timer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+  /* Removed solid blue - using Glassmorphism now */
+  background: rgba(255, 255, 255, 0.2); 
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #2d3436;
+  position: relative;
+  min-height: 500px;
 }
 
-.add-goal-btn:hover{
-  transform:scale(1.1);
+.timer-goal-title {
+  font-size: 32px;
+  font-weight: 900;
+  margin-bottom: 30px;
+  color: #2d3436;
+  letter-spacing: -1px;
+}
+
+.timer-circle-box {
+  position: relative;
+  margin: 20px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timer-display {
+  font-size: 64px; /* Big and bold */
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  margin: 20px 0;
+  color: #2d3436;
+}
+
+.timer-stats-grid {
+  display: flex;
+  gap: 30px;
+  margin: 25px 0;
+  font-weight: 600;
+  color: #636e72;
+}
+
+.timer-actions-row {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Professional Button Styles for Timer */
+.timer-btn {
+  padding: 12px 25px;
+  border-radius: 15px;
+  border: none;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.timer-btn-primary { background: #fab1a0; color: white; }
+.timer-btn-secondary { background: #dfe6e9; color: #2d3436; }
+.timer-btn-danger { background: #ff7675; color: white; }
+
+.timer-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }
 
 /* =========================================
-   TIMER UI FIXED
+    SCROLLBARS & FLOATING BUTTON
 ========================================= */
 
-.timer-view{
-  width:100%;
-  height:100%;
-  border-radius:30px;
-  padding:20px;
-  position:relative;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
+.right-panel::-webkit-scrollbar,
+.scrapbook-sidebar::-webkit-scrollbar {
+  width: 6px;
 }
 
-.back-btn-clean{
-  position:absolute;
-  top:20px;
-  left:20px;
-  background:#6c7543;
-  color:white;
-  border:none;
-  padding:8px 16px;
-  border-radius:10px;
-  cursor:pointer;
-  font-size:14px;
+.right-panel::-webkit-scrollbar-thumb,
+.scrapbook-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 10px;
 }
 
-.timer-inner{
-  text-align:center;
-  width:100%;
-}
-
-.timer-goal-title{
-  font-size:22px;
-  font-weight:700;
-  margin-bottom:15px;
-}
-
-.timer-circle-wrapper{
-  position:relative;
-  width:260px;
-  height:260px;
-  margin:auto;
-}
-
-.timer-content{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  
-  text-align:center;
-  width:100%;
-}
-
-.current-timer{
-  font-size:32px;
-  font-weight:700;
-}
-
-.remaining-text{
-  font-size:13px;
-  margin-top:4px;
-}
-
-.play-btn{
-  margin-top:10px;
-  background:white;
-  border:none;
-  width:48px;
-  height:48px;
-  border-radius:50%;
-  cursor:pointer;
-  font-size:18px;
-}
-
-.timer-footer-stats{
-  margin-top:20px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:18px;
-}
-
-.stat-box{
-  text-align:center;
-}
-
-.stat-divider{
-  width:1px;
-  height:30px;
-  background:#333;
-}
-
-.timer-buttons{
-  margin-top:20px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  align-items:center;
-}
-
-.timer-buttons button{
-  width:200px;
-  padding:9px;
-  border-radius:20px;
-  border:none;
-  cursor:pointer;
-  font-weight:600;
-}
-
-.timer-buttons button:nth-child(1){
-  background:#ffffff;
-}
-
-.timer-buttons button:nth-child(2){
-  background:#eeeeee;
-}
-
-.timer-buttons button:nth-child(3){
-  background:#ff6b6b;
-  color:white;
-}
-
-/* =========================================
-   RESPONSIVE
-========================================= */
-
-@media(max-width:900px){
-
-  .goals-container{
-    grid-template-columns:1fr;
-  }
-
-  .left-panel{
-    height:auto;
-  }
-
-  .right-panel{
-    height:auto;
-  }
-
-  .add-goal-btn{
-    right:20px;
-  }
-
-}
-
-/* =========================================
-   SCROLLBAR STYLE
-========================================= */
-
-.scroll-enabled::-webkit-scrollbar{
-  width:6px;
-}
-
-.scroll-enabled::-webkit-scrollbar-thumb{
-  background:#e8c786;
-  border-radius:10px;
+.add-goal-btn-floating {
+  position: fixed; 
+  bottom: 40px;
+  right: 50px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #fab1a0;
+  color: white;
+  border: 4px solid white;
+  font-size: 26px;
+  cursor: pointer;
+  z-index: 2000;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  transition: 0.3s;
 }

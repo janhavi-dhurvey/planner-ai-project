@@ -1,75 +1,193 @@
 /* =========================================
-   CALENDAR PAGE ANIMATIONS
+    CALENDAR PAGE LAYOUT
    ========================================= */
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.calendar-page-wrapper {
+    /* 🔥 STRICT: Matches Goals and Chatbot background */
+    background: url("../../assets/sky-bg.jpg") no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+}
+
+.calendar-content-centerer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    padding-top: 60px; /* Aligned with Navbar */
+    height: calc(100vh - 80px);
+    overflow: hidden;
 }
 
 /* =========================================
-   LOADING SPINNER
+    MAIN GLASS CONTAINER
    ========================================= */
+
+.calendar-main-box {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    width: 90%;
+    max-width: 1000px;
+    height: 85%;
+    border-radius: 40px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+/* =========================================
+    DATE PICKER (PROFESSIONAL PILL)
+   ========================================= */
+
+.calendar-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.calendar-title {
+    font-size: 26px;
+    font-weight: 900;
+    color: #2d3436;
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+}
+
+.date-picker-wrapper {
+    background: white;
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 20px;
+    border-radius: 50px; /* Professional Pill */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.date-picker-wrapper input[type="date"] {
+    border: none;
+    outline: none;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    color: #2d3436;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+/* =========================================
+    TIMELINE (SCROLLABLE AREA)
+   ========================================= */
+
+.timeline-scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 15px;
+    margin-top: 10px;
+}
+
+.timeline-scroll-area::-webkit-scrollbar {
+    width: 6px;
+}
+
+.timeline-scroll-area::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+}
+
+.timeline-day-label {
+    font-size: 18px;
+    font-weight: 800;
+    color: #2d3436;
+    margin-bottom: 25px;
+    border-left: 5px solid #fab1a0;
+    padding-left: 15px;
+}
+
+/* =========================================
+    TIMELINE BUBBLES
+   ========================================= */
+
+.timeline-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+    animation: fadeIn 0.4s ease forwards;
+}
+
+.timeline-time {
+    width: 100px;
+    font-weight: 700;
+    color: #636e72;
+    font-size: 14px;
+}
+
+.timeline-card {
+    flex: 1;
+    padding: 15px 25px;
+    border-radius: 20px;
+    background: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: 0.3s ease;
+    border: 1px solid rgba(255,255,255,1);
+    position: relative;
+}
+
+.timeline-card:hover {
+    transform: translateX(8px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.timeline-card-title {
+    font-weight: 800;
+    color: #2d3436;
+    font-size: 16px;
+}
+
+.timeline-card-duration {
+    background: rgba(0,0,0,0.05);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #636e72;
+}
+
+/* =========================================
+    LOADING & ANIMATIONS
+   ========================================= */
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
 .spinner {
     width: 40px;
     height: 40px;
-    margin: 20px auto;
-    border: 4px solid rgba(0, 0, 0, 0.1);
-    border-left-color: #5a5a5a; /* Matches your professional theme */
+    margin: 40px auto;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-left-color: #fab1a0;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+    to { transform: rotate(360deg); }
 }
 
-/* =========================================
-   DATE INPUT CUSTOMIZATION
-   ========================================= */
-
-/* Making the native date picker feel more modern */
-input[type="date"]::-webkit-calendar-picker-indicator {
-    cursor: pointer;
-    filter: invert(0.4); /* Softens the icon color */
-    transition: 0.2s;
-}
-
-input[type="date"]::-webkit-calendar-picker-indicator:hover {
-    filter: invert(0.2);
-    transform: scale(1.1);
-}
-
-/* =========================================
-   TIMELINE HOVER EFFECTS
-   ========================================= */
-
-/* Adding a slight lift effect to your timeline bars */
-div[style*="display: flex"][style*="align-items: center"][style*="margin-bottom: 22px"]:hover div[style*="box-shadow"] {
-    transform: translateX(5px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.18) !important;
-}
-
-/* =========================================
-   RESPONSIVE TWEAKS
-   ========================================= */
-
-@media (max-width: 768px) {
-    input[type="date"] {
-        width: 100%;
-        box-sizing: border-box;
-    }
-    
-    div[style*="width: 85%"] {
-        width: 95% !important;
-    }
+.empty-state {
+    text-align: center;
+    padding: 50px;
+    color: #636e72;
+    font-weight: 600;
 }

@@ -65,29 +65,24 @@ const Chatbot = () => {
     return text.split("\n").map((line, i) => {
       if (!line.trim()) return <br key={i} />;
       if (line.toLowerCase().includes("planner") || line.toLowerCase().includes("tips")) {
-        return <h4 key={i}>{line}</h4>;
+        return <h4 key={i} style={{ margin: '10px 0', color: '#2d3436' }}>{line}</h4>;
       }
-      return <p key={i}>{line}</p>;
+      return <p key={i} className="chat-line">{line}</p>;
     });
   };
 
-  /* =========================================
-      SMART AUTO-PARSER (STRICT ORDERING)
-  ========================================= */
   const autoSyncData = async (aiText, userInput) => {
     const now = new Date();
     const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
-    // 1. CLEAR PREVIOUS RECORDS FOR TODAY ONLY
     try {
       await API.delete(`/goals/daily?date=${todayStr}`);
     } catch (e) {
       console.error("Reset Error:", e);
     }
 
-    // 2. PARSE WITH EXPLICIT ORDER INDEX
     const lines = aiText.split("\n");
-    let sequenceIndex = 0; // Tracks the visual order from AI text
+    let sequenceIndex = 0;
 
     for (const line of lines) {
       if (line.includes(" - ") && (line.includes("AM") || line.includes("PM"))) {
@@ -102,9 +97,9 @@ const Chatbot = () => {
               time: parts[1].trim(),
               duration: parseInt(parts[2]) || 60,
               date: todayStr,
-              color: isBreak ? "#FFD966" : "#89CFF0",
+              color: isBreak ? "#FFD966" : "#fab1a0", // Adjusted to pastel
               category: isBreak ? "☕" : "📘",
-              order: sequenceIndex // CRITICAL: Forces visual sequence in DB
+              order: sequenceIndex 
             });
             sequenceIndex++; 
           } catch (e) { console.error("Goal Sync Error", e); }
@@ -112,7 +107,6 @@ const Chatbot = () => {
       }
     }
 
-    // 3. SMART DEADLINE DETECTION
     const lowerInput = userInput.toLowerCase();
     const months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
     let detectedDate = null;
@@ -125,8 +119,6 @@ const Chatbot = () => {
       const monthStr = (match[2] || match[3]).toLowerCase().substring(0, 3);
       const monthIdx = months.indexOf(monthStr);
       detectedDate = new Date(2026, monthIdx, day);
-    } else if (lowerInput.includes("april ends")) {
-      detectedDate = new Date(2026, 3, 30);
     }
 
     if (detectedDate && !isNaN(detectedDate.getTime())) {
@@ -154,16 +146,13 @@ const Chatbot = () => {
     try {
       const res = await API.post("/chat", { message: messageToSend });
       const replyRaw = res?.data?.reply;
-
       if (!replyRaw || typeof replyRaw !== "string") throw new Error("Invalid AI response");
 
       const reply = cleanAIResponse(replyRaw);
       setMessages(prev => [...prev, { role: "assistant", text: reply }]);
-
       await autoSyncData(reply, messageToSend);
       loadChats();
     } catch (err) {
-      console.error("CHAT ERROR:", err);
       setMessages(prev => [...prev, { role: "assistant", text: "⚠️ Something went wrong. Please try again." }]);
     } finally {
       setLoading(false);
@@ -201,6 +190,8 @@ const Chatbot = () => {
       <Navbar />
       <div className="chatbot-content-centerer">
         <div className="chatbot-main-layout">
+          
+          {/* Sidebar Section */}
           <div className="ai-sidebar">
             <button className="new-chat-btn" onClick={startNewChat}>+ New Chat</button>
             <div className="sidebar-history-container">
@@ -223,30 +214,35 @@ const Chatbot = () => {
             </div>
           </div>
 
+          {/* Chat Viewport Section */}
           <div className="ai-viewport">
             <div className="chat-container-box">
               <h2 className="system-title">Academic Assistant AI</h2>
+              
               <div className="chat-scroll-window" ref={scrollRef}>
                 {messages.length === 0 && (
                   <div className="welcome-ui">
-                    <h3>👋 Welcome!</h3>
-                    <p>Ask me to create a smart study plan.</p>
+                    <h3 style={{ fontSize: '28px', marginBottom: '10px' }}>👋 Welcome!</h3>
+                    <p style={{ opacity: 0.8 }}>Ask me to create a smart study plan.</p>
                     <button onClick={() => sendMessage("Give me a planner for DSA, Aptitude and CN")}>
                       📅 Create Study Plan
                     </button>
                   </div>
                 )}
+                
                 {messages.map((msg, index) => (
                   <div key={index} className={`msg-row ${msg.role === "user" ? "user" : "bot"}`}>
                     <div className="msg-bubble">{formatMessage(msg.text)}</div>
                   </div>
                 ))}
+                
                 {loading && (
                   <div className="msg-row bot">
                     <div className="msg-bubble typing">Thinking...</div>
                   </div>
                 )}
               </div>
+
               <div className="input-section">
                 <input
                   type="text"
@@ -257,7 +253,9 @@ const Chatbot = () => {
                   onKeyDown={handleKeyPress}
                   disabled={loading}
                 />
-                <button className="send-btn" onClick={() => sendMessage()} disabled={loading}>➤</button>
+                <button className="send-btn" onClick={() => sendMessage()} disabled={loading}>
+                  <span style={{ fontSize: '18px' }}>➤</span>
+                </button>
               </div>
             </div>
           </div>

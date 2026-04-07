@@ -3,14 +3,11 @@ import API from "../../services/api";
 import "./Goals.css";
 
 const GoalTimer = ({ goal, onBack }) => {
-
   const totalGoalSeconds = (goal?.duration || 60) * 60;
-
   const [seconds, setSeconds] = useState(0);
   const [breakSeconds, setBreakSeconds] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [isBreakMode, setIsBreakMode] = useState(false);
-
   const timerRef = useRef(null);
 
   useEffect(() => {
@@ -23,16 +20,12 @@ const GoalTimer = ({ goal, onBack }) => {
 
   useEffect(() => {
     if (!isRunning) return;
-
     timerRef.current = setInterval(() => {
-
       if (isBreakMode) {
         setBreakSeconds(prev => prev + 1);
       } else {
         setSeconds(prev => {
-
           const next = prev + 1;
-
           if (next >= totalGoalSeconds) {
             clearInterval(timerRef.current);
             setIsRunning(false);
@@ -40,15 +33,11 @@ const GoalTimer = ({ goal, onBack }) => {
             alert("🎉 Goal completed!");
             return totalGoalSeconds;
           }
-
           return next;
         });
       }
-
     }, 1000);
-
     return () => clearInterval(timerRef.current);
-
   }, [isRunning, isBreakMode, totalGoalSeconds]);
 
   const handleGoalCompletion = async () => {
@@ -60,59 +49,35 @@ const GoalTimer = ({ goal, onBack }) => {
         });
       }
     } catch {}
-
-    try {
-      const completed =
-        JSON.parse(localStorage.getItem("completedGoals")) || [];
-
-      completed.push({
-        title: goal?.title || "Goal",
-        duration: goal?.duration || 0,
-        date: new Date().toLocaleDateString()
-      });
-
-      localStorage.setItem(
-        "completedGoals",
-        JSON.stringify(completed)
-      );
-    } catch {}
   };
 
   const formatTime = (totalSeconds) => {
     const hrs = Math.floor(totalSeconds / 3600).toString().padStart(2, "0");
     const mins = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, "0");
     const secs = (totalSeconds % 60).toString().padStart(2, "0");
-
     return `${hrs}:${mins}:${secs}`;
   };
 
   const remainingSeconds = Math.max(totalGoalSeconds - seconds, 0);
-
-  const progress =
-    totalGoalSeconds > 0
-      ? Math.min((seconds / totalGoalSeconds) * 100, 100)
-      : 0;
-
+  const progress = totalGoalSeconds > 0 ? Math.min((seconds / totalGoalSeconds) * 100, 100) : 0;
   const radius = 90;
   const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset =
-    circumference - (progress / 100) * circumference;
+  const strokeDashoffset = circumference - (progress / 100) * circumference;
 
   const startTimer = () => {
-    if (isRunning) return;
+    if (isRunning && !isBreakMode) return;
     setIsBreakMode(false);
     setIsRunning(true);
   };
 
   const pauseTimer = () => setIsRunning(false);
-
   const startBreak = () => {
-    clearInterval(timerRef.current);
     setIsBreakMode(true);
     setIsRunning(true);
   };
 
   const resetTimer = () => {
+    if(!window.confirm("Reset all progress for this session?")) return;
     clearInterval(timerRef.current);
     setSeconds(0);
     setBreakSeconds(0);
@@ -120,107 +85,74 @@ const GoalTimer = ({ goal, onBack }) => {
     setIsBreakMode(false);
   };
 
-  const terminateGoal = () => {
-    clearInterval(timerRef.current);
-    setIsRunning(false);
-    onBack();
-  };
-
   return (
-    <div
-      className="timer-view"
-      style={{ backgroundColor: goal?.color || "#888" }}
-    >
-
-      <button className="back-btn-clean" onClick={terminateGoal}>
-        ← Back
+    <div className="timer-container fade-in">
+      {/* Professional Back Button */}
+      <button className="back-btn-aesthetic" onClick={onBack} style={{ position: 'absolute', top: '20px', left: '20px' }}>
+        ← Back to Planner
       </button>
 
-      <div className="timer-inner">
+      <h2 className="timer-goal-title">{goal?.title}</h2>
 
-        <h2 className="timer-goal-title">{goal?.title}</h2>
+      {/* Progress Circle Section */}
+      <div className="timer-circle-box">
+        <svg width="220" height="220">
+          <circle
+            cx="110"
+            cy="110"
+            r={radius}
+            stroke="rgba(0,0,0,0.05)"
+            strokeWidth="12"
+            fill="none"
+          />
+          <circle
+            cx="110"
+            cy="110"
+            r={radius}
+            stroke={goal?.color || "#fab1a0"}
+            strokeWidth="12"
+            fill="none"
+            strokeDasharray={circumference}
+            strokeDashoffset={strokeDashoffset}
+            strokeLinecap="round"
+            transform="rotate(-90 110 110)"
+            style={{ transition: "stroke-dashoffset 0.8s ease" }}
+          />
+        </svg>
 
-        {/* ✅ FIXED CIRCLE ALIGNMENT */}
-        <div className="timer-circle-wrapper">
-
-          <svg width="260" height="260"> {/* MATCHED WITH CSS */}
-
-            <circle
-              cx="130"
-              cy="130"
-              r={radius}
-              stroke="#ffffff40"
-              strokeWidth="10"
-              fill="none"
-            />
-
-            <circle
-              cx="130"
-              cy="130"
-              r={radius}
-              stroke="#ffffff"
-              strokeWidth="10"
-              fill="none"
-              strokeDasharray={circumference}
-              strokeDashoffset={strokeDashoffset}
-              strokeLinecap="round"
-              transform="rotate(-90 130 130)"
-              style={{ transition: "stroke-dashoffset 0.5s ease" }}
-            />
-
-          </svg>
-
-          {/* CENTER CONTENT */}
-          <div className="timer-content">
-
-            <p className="goal-target-display">
-              Start Time: {goal?.time || "Now"}
-            </p>
-
-            <h1 className="current-timer">
-              {formatTime(seconds)}
-            </h1>
-
-            <p className="remaining-text">
-              Remaining: {formatTime(remainingSeconds)}
-            </p>
-
-            {!isRunning ? (
-              <button className="play-btn" onClick={startTimer}>▶</button>
-            ) : (
-              <button className="play-btn" onClick={pauseTimer}>⏸</button>
-            )}
-
-            {isBreakMode && (
-              <p className="break-counter">
-                ☕ Break: {Math.floor(breakSeconds / 60)} min
-              </p>
-            )}
-
-          </div>
-
+        {/* Big Countdown Display */}
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -40%)' }}>
+           <h1 className="timer-display">{formatTime(seconds)}</h1>
+           <p style={{ fontSize: '12px', fontWeight: '800', color: '#636e72', textTransform: 'uppercase' }}>
+             {isBreakMode ? "☕ On Break" : "✍️ Focusing"}
+           </p>
         </div>
+      </div>
 
-        <div className="timer-footer-stats">
-          <div className="stat-box">
-            <span>Goal Duration</span>
-            <strong>{formatTime(totalGoalSeconds)}</strong>
-          </div>
-
-          <div className="stat-divider"></div>
-
-          <div className="stat-box">
-            <span>Break Time</span>
-            <strong>{formatTime(breakSeconds)}</strong>
-          </div>
+      {/* Stats and Time Info */}
+      <div className="timer-stats-grid">
+        <div>
+          <span style={{ display: 'block', fontSize: '11px', textTransform: 'uppercase' }}>Remaining</span>
+          <span style={{ fontSize: '18px', fontWeight: '800' }}>{formatTime(remainingSeconds)}</span>
         </div>
-
-        <div className="timer-buttons">
-          <button onClick={startBreak}>Start Break</button>
-          <button onClick={resetTimer}>Reset Timer</button>
-          <button onClick={terminateGoal}>Terminate Goal</button>
+        <div style={{ width: '1px', background: '#ddd' }}></div>
+        <div>
+          <span style={{ display: 'block', fontSize: '11px', textTransform: 'uppercase' }}>Breaks</span>
+          <span style={{ fontSize: '18px', fontWeight: '800' }}>{formatTime(breakSeconds)}</span>
         </div>
+      </div>
 
+      {/* Professional Action Buttons */}
+      <div className="timer-actions-row">
+        {!isRunning || isBreakMode ? (
+          <button className="timer-btn timer-btn-primary" onClick={startTimer}>▶ Resume Focus</button>
+        ) : (
+          <button className="timer-btn timer-btn-secondary" onClick={pauseTimer}>⏸ Pause</button>
+        )}
+        
+        <button className="timer-btn timer-btn-secondary" onClick={startBreak}>☕ Take Break</button>
+        <button className="timer-btn timer-btn-secondary" onClick={resetTimer}>🔄 Reset</button>
+        <button className="timer-btn timer-btn-danger" onClick={onBack}>⏹ Terminate</button>
       </div>
     </div>
   );
