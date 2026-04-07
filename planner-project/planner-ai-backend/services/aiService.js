@@ -1,14 +1,14 @@
 import axios from "axios";
 
 /* =========================================
-   CONFIG
+    CONFIG
 ========================================= */
 
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 const DEFAULT_MODEL = process.env.AI_MODEL || "openai/gpt-4o-mini";
 
 /* =========================================
-   AXIOS CLIENT
+    AXIOS CLIENT
 ========================================= */
 
 const aiClient = axios.create({
@@ -17,7 +17,7 @@ const aiClient = axios.create({
 });
 
 /* =========================================
-   RETRY CONFIG
+    RETRY CONFIG
 ========================================= */
 
 const MAX_RETRIES = 2;
@@ -26,41 +26,40 @@ const delay = (ms) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
 /* =========================================
-   🔥 SMART SYSTEM PROMPT (FIXED FOR DUPLICATION)
+    🔥 PROFESSIONAL SYSTEM PROMPT (DETAILED ROADMAP)
 ========================================= */
 
 const systemPrompt = {
   role: "system",
   content: `
-You are a professional AI Productivity Planner. 
+You are a Senior Academic Success Coach and Professional Productivity Planner.
 
-Your goal is to generate an OPTIMIZED study schedule for TODAY ONLY.
+Your goal is to provide a comprehensive, high-level study roadmap followed by a specific daily timeline.
 
-⚠️ CRITICAL RULES TO PREVENT UI ERRORS:
-1. ONLY provide ONE timeline. It must be for the current date provided.
-2. NEVER use "Day 1", "Day 2", "Week 1", etc., as headings for the timeline.
-3. If you want to suggest a long-term plan (e.g., "Next 3 days"), describe it in plain paragraphs ONLY. Do NOT use the "Time - Duration" format for future days.
-4. ONLY use the "Time - Duration" format for TODAY'S immediate schedule.
-5. NEVER use the word "Subject". Use REAL names (Python, DSA, etc.).
+STRUCTURE YOUR RESPONSE EXACTLY LIKE THIS:
 
-FORMAT:
-Brief motivational strategy (1 paragraph).
-Then, Today's Timeline.
+1. 🎯 OVERALL STRATEGY: Provide a professional breakdown of how to split time between the subjects requested (e.g., "Focus 50% on DSA, 25% on Java...").
+2. 📅 PHASE-WISE ROADMAP: If the user mentions a deadline, break the journey into 3 phases (Basics, Core, Advanced) with specific topics.
+3. 🔥 PRO TIPS: Give 2-3 professional study tips or recommended platforms (like LeetCode or IndiaBix).
+4. 📆 TODAY'S OPTIMIZED TIMELINE: This part is mandatory for the app to function.
 
-TIMELINE FORMAT (Strictly follow this for today only):
-Python - 05:00 PM - 60 minutes
-Break - 06:00 PM - 15 minutes
-DSA - 06:15 PM - 60 minutes
-
-RULES FOR TIMELINE:
-- 4–6 sessions for today.
-- Break after each study block.
+⚠️ CRITICAL TIMELINE RULES:
+- Format: [Subject] - [Time] - [Duration] minutes
 - Start from the current time provided.
+- Include 15-minute breaks after 60-minute blocks.
+- ONLY use the subjects requested by the user.
+
+Example Timeline:
+DSA - 05:00 PM - 60 minutes
+Break - 06:00 PM - 15 minutes
+Java - 06:15 PM - 60 minutes
+
+Use emojis and professional formatting. Keep it highly organized.
 `
 };
 
 /* =========================================
-   FALLBACK (UNCHANGED)
+    FALLBACK (UNCHANGED)
 ========================================= */
 
 const fallbackPlanner = () => {
@@ -94,7 +93,7 @@ ${make("Revision", 45)}
 };
 
 /* =========================================
-   ASK AI FUNCTION
+    ASK AI FUNCTION
 ========================================= */
 
 export const askAI = async (messages) => {
@@ -117,7 +116,7 @@ export const askAI = async (messages) => {
 
     const timePrompt = {
       role: "system",
-      content: `Current time is ${currentTime} on ${currentDate}. Provide a timeline for TODAY ONLY. Do not use list numbers or "Day X" labels for the timeline entries.`
+      content: `Current time is ${currentTime} on ${currentDate}. Focus STRICTLY on the subjects requested in the user's last message. Provide the professional roadmap first, then the timeline.`
     };
 
     /* ✅ FINAL MESSAGE STACK */
@@ -138,8 +137,8 @@ export const askAI = async (messages) => {
           {
             model: DEFAULT_MODEL,
             messages: safeMessages,
-            temperature: 0.7, // Slightly lowered for more consistent formatting
-            max_tokens: 1500
+            temperature: 0.7, // Increased to 0.7 for more "ChatGPT-like" professional advice
+            max_tokens: 1500  // Increased to handle the longer professional response
           },
           {
             headers: {
